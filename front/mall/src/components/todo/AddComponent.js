@@ -1,4 +1,7 @@
 import React, { useState } from "react";
+import ResultModal from "../common/ResultModal";
+import { postAdd } from "../../api/todoApi";
+import useCustomMove from "../../hooks/useCustomMove";
 
 const initState = {
   title: "",
@@ -9,6 +12,10 @@ const initState = {
 function AddComponent(props) {
   const [todo, setTodo] = useState({ ...initState });
 
+  const [result, setResult] = useState(null);
+
+  const { moveToList } = useCustomMove();
+
   const handleChangeTodo = (e) => {
     console.log(e.target.name, e.target.value);
     todo[e.target.name] = e.target.value;
@@ -17,7 +24,17 @@ function AddComponent(props) {
   };
 
   const handleClickAdd = () => {
-    console.log(todo);
+    // console.log(todo);
+    postAdd(todo).then((result) => {
+      // ex) {TNO : 104}
+      setResult(result.TNO);
+      setTodo({ ...initState });
+    });
+  };
+
+  const closeModal = () => {
+    setResult(null);
+    moveToList();
   };
 
   return (
@@ -48,12 +65,12 @@ function AddComponent(props) {
       </div>
       <div className="flex justify-center">
         <div className="relative mb-4 flex w-full flex-wrap items-stretch">
-          <div className="w-1/5 p-6 text-right font-bold">WRITER</div>
+          <div className="w-1/5 p-6 text-right font-bold">CONTENT</div>
           <input
             className="w-4/5 p-6 rounded-r border border-solid border-neutral-500 shadow-md"
-            name="writer"
+            name="content"
             type={"text"}
-            value={todo.writer}
+            value={todo.content}
             onChange={handleChangeTodo}
           ></input>
         </div>
@@ -81,6 +98,16 @@ function AddComponent(props) {
           </button>
         </div>
       </div>
+
+      {result ? (
+        <ResultModal
+          title={`Add Result`}
+          content={`New ${result} Added`}
+          callbackFn={closeModal}
+        />
+      ) : (
+        <></>
+      )}
     </div>
   );
 }
