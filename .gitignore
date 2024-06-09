@@ -58,3 +58,8 @@ psd
 thumb
 sketch
 
+
+### upload
+
+/upload/*
+
