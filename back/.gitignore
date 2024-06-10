@@ -58,10 +58,13 @@ psd
 thumb
 sketch
 
-### upload ###
+
+### upload
+
 /upload/*
 
-### Gradle ###
+
+HELP.md
 .gradle
 build/
 !gradle/wrapper/gradle-wrapper.jar
@@ -98,3 +101,5 @@ out/
 
 ### VS Code ###
 .vscode/
+
+
