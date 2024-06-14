@@ -98,6 +98,46 @@ public class ProductServiceImpl implements ProductService{
         return productDTO;
     }
 
+    @Override
+    public void modify(ProductDTO productDTO) {
+        // 조회
+        Optional<Product> result = productRepository.findById(productDTO.getPno());
+
+        Product product = result.orElseThrow();
+
+        // 변경 내용 반영
+        product.changePrice(productDTO.getPrice());
+        product.changeName(productDTO.getPname());
+        product.changeDesc(productDTO.getPdesc());
+        product.changeDel(productDTO.isDelFlag());
+
+        // 이미지 처리를 하기 위해선 Array를 다른객체로 바꾸면 안됨
+        // 일단 목록을 비워야함
+
+        List<String> uploadFileNames = productDTO.getUploadFileNames();
+
+        product.clearList();
+
+        if(uploadFileNames != null && !uploadFileNames.isEmpty()) {
+
+            uploadFileNames.forEach(uploadName -> {
+                product.addImageString(uploadName);
+            });
+        }
+
+        // 저장
+
+        productRepository.save(product);
+
+
+    }
+
+    @Override
+    public void remove(Long pno) {
+
+        productRepository.deleteById(pno);
+    }
+
     private ProductDTO entityToDTO(Product product){
 
         ProductDTO productDTO = ProductDTO.builder()
